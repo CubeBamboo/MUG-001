@@ -6,6 +6,6 @@ namespace Playing
 {
     public enum HitJudge
     {
-        PERFECT, GREAT, BAD, MISS
+        PERFECT, GREAT, MISS
     }
 }

@@ -18,6 +18,8 @@ namespace Playing
         [Header("Settings")]
         public GameObject notePrefab;
 
+        public bool IsEmpty => allNoteGameObj.Count == 0;
+
         private void Awake()
         {
             allNoteGameObj = new List<Note>();
@@ -67,7 +69,7 @@ namespace Playing
             {
                 if (hitInterval < ChartPlayer.Instance.perfectRange) ChartPlayer.Instance.GiveJudge(HitJudge.PERFECT);
                 else if (hitInterval < ChartPlayer.Instance.greatRange) ChartPlayer.Instance.GiveJudge(HitJudge.GREAT);
-                else ChartPlayer.Instance.GiveJudge(HitJudge.BAD);
+                else ChartPlayer.Instance.GiveJudge(HitJudge.MISS);
 
                 DeleteNoteAndSwitch(activeNote);
                 return;
@@ -99,6 +101,8 @@ namespace Playing
 
         private void NoteNumUpdate(Note note)
         {
+            return;
+
             if(note == null)
             {
                 text.text = null;

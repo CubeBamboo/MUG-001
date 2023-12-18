@@ -33,7 +33,6 @@ namespace LevelEditor
 
         public static RuntimeNoteData[] StoredNoteToRuntime(StoredNoteData[] storedNotes, float bpm, float offset = 0)
         {
-            //TODO: change the data struction from array to list.
             RuntimeNoteData[] res = new RuntimeNoteData[storedNotes.Length];
             for (int i = 0; i < storedNotes.Length; i++)
             {

@@ -5,7 +5,7 @@ using Data;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Text;
-using Unity.VisualScripting;
+using System.Reflection;
 
 namespace Playing
 {
@@ -31,10 +31,10 @@ namespace Playing
         public Vector2 noteMoveDir => noteTargetPos - noteStartPos;
 
         [Header("Chart")]
-        public string chartPath = "Assets/Resources/Chart/sample1";
+        public string chartPath = "Assets/Resources/Chart/sample1.chart";
 
         //for playing chart
-        private Chart chartOnPlaying;
+        public Chart chartOnPlaying { get; private set; }
         private RuntimeNoteData[] allRuntimeNotes;
         private uint nextNoteIndex;
 
@@ -48,6 +48,11 @@ namespace Playing
         private AudioSource hitKeySource;
         public AudioClip hitKeyClip;
 
+        private bool IsNoteListEmpty => nextNoteIndex >= allRuntimeNotes.Length;
+
+        //Action
+        public event System.Action onPerfectJudge, onGreatJudge, onMissJudge;
+
         #region UnityEventFunc
 
         protected override void Awake()
@@ -59,17 +64,18 @@ namespace Playing
 
         private void Start()
         {
-            //Init chart and all the note
+            //get and resolve the chart to get all the note.
             chartOnPlaying = GetChart(chartPath);
-            allRuntimeNotes = LevelEditor.ChartUtility.StoredNoteToRuntime(chartOnPlaying.notesArray, chartOnPlaying.bpm, chartOnPlaying.offset);
-            Debug.Assert(allRuntimeNotes != null);
+            allRuntimeNotes = LevelEditor.ChartUtility.StoredNoteToRuntime(chartOnPlaying.notesArray, chartOnPlaying.bpm, chartOnPlaying.offset); Debug.Assert(allRuntimeNotes != null);
 
             //Init Game and music
             nextNoteIndex = 0;
             InitMusic(chartOnPlaying.musicFileName);
             hitKeySource.clip = hitKeyClip;
+
+            //GameStart
             OnChartStart();
-            Debug.Log("GameInit");
+            Debug.Log("GameStart");
         }
 
         private void FixedUpdate()
@@ -95,16 +101,6 @@ namespace Playing
             string runningDataStr = "RunningTime: " + RunningTime.ToString("0.00") + "\n"
                 + $"musicSource.time = {musicSource.time}";
             GUI.Label(new Rect(25, 25, 300, 90), runningDataStr, leftTopStyle);
-
-            //string noteDataStr = "NoteList:\n";
-            //if (allRuntimeNotes != null) {
-            //    for(int i = 0; i < allRuntimeNotes.Length; i++) {
-            //        noteDataStr += $"note[{i}] : {allRuntimeNotes[i].hitTime}s\n";
-            //    }
-            //} else {
-            //    noteDataStr += "No Note Found!";
-            //}
-            //GUI.Box(new Rect(25, 120, 500, 800), noteDataStr, leftTopStyle);
 
             GUIStyle leftBottomStyle = new GUIStyle(leftTopStyle);
             leftBottomStyle.alignment = TextAnchor.LowerLeft;
@@ -163,10 +159,7 @@ namespace Playing
         private bool CanPlayNextNote()
         {
             if (nextNoteIndex >= allRuntimeNotes.Length)
-            {
-                OnChartEnd();
                 return false;
-            }
             
             if(allRuntimeNotes[nextNoteIndex].hitTime - RunningTime <= noteStartPos.x / noteSpeed)
                 return true;
@@ -190,6 +183,10 @@ namespace Playing
                 //Debug.Log("PlayNextNote!");
                 PlaySingleNote(MoveToNextNote());
             }
+            else if(IsNoteListEmpty && track.IsEmpty)
+            {
+                OnChartEnd();
+            }
         }
 
         //play a new note
@@ -202,13 +199,31 @@ namespace Playing
         //callback function on player hitting the track (key).
         public void OnHitKey()
         {
+            //hit determine
             track.OnHitKey();
+            //hit effect
             hitKeySource.Play();
         }
 
         public void GiveJudge(HitJudge judge)
         {
             judgeEffect.PlayJudge(judge);
+
+            switch (judge)
+            {
+                case HitJudge.PERFECT:
+                    onPerfectJudge?.Invoke();
+                    break;
+                case HitJudge.GREAT:
+                    onGreatJudge?.Invoke();
+                    break;
+                case HitJudge.MISS:
+                    onMissJudge?.Invoke();
+                    break;
+                default:
+                    Debug.LogError("Judge Error");
+                    break;
+            }
         }
 
         #endregion
@@ -219,6 +234,7 @@ namespace Playing
         {
             Debug.Log("Chart Play End.");
             isChartEnd = true;
+            Core.GameManager.Instance.OnGameEnd();
         }
 
         #endregion
