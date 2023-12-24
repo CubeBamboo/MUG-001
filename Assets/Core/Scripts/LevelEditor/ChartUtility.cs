@@ -8,15 +8,15 @@ namespace LevelEditor
 {
     public static class ChartUtility
     {
-        public static string chartToFile(Chart chart)
+        public static string ChartToFile(ChartInfo chart)
         {
             var json = JsonUtility.ToJson(chart);
             return json;
         }
 
-        public static Chart fileToChart(string json)
+        public static ChartInfo FileToChart(string json)
         {
-            var chart = JsonUtility.FromJson<Chart>(json); //TODO: convert fail? json is null?
+            var chart = JsonUtility.FromJson<ChartInfo>(json); //TODO: convert fail? json is null?
             return chart;
         }
 
@@ -29,6 +29,32 @@ namespace LevelEditor
                 Debug.Log("Write To File Successfully.");
             }
             //streamWriter.Flush();
+        }
+
+        public static string ReadTextFromFile(string filePath)
+        {
+            string text = null;
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                text = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            return text;
+        }
+
+        public static AudioClip GetAudioClip(DirectoryInfo chartPath, string musicFileName)
+        {
+            var path = chartPath.Parent.ToString();
+            //switch to relativly file path
+            var audioAssetPath = path.Substring(path.IndexOf("Resources\\") + "Resources\\".Length);
+            //delete the ".mp3" suffix
+            if (musicFileName.LastIndexOf(".") != -1) musicFileName = musicFileName.Substring(0, musicFileName.LastIndexOf("."));
+            audioAssetPath += "/" + musicFileName;
+            audioAssetPath = audioAssetPath.Replace("\\", "/");
+            //Debug.Log("load from: " + audioAssetPath);
+            var music = Resources.Load<AudioClip>(audioAssetPath);
+            return music;
         }
 
         public static RuntimeNoteData[] StoredNoteToRuntime(StoredNoteData[] storedNotes, float bpm, float offset = 0)
@@ -49,6 +75,16 @@ namespace LevelEditor
             }
 
             return res;
+        }
+
+        public static ChartInfo GetActiveChart()
+        {
+            if (Core.GameManager.Instance == null)
+            {
+                Debug.LogWarning("GameManager not Found");
+                return null;
+            }
+            return FileToChart(ReadTextFromFile(Core.GameManager.Instance.selectChartFile.FullName));
         }
     }
 }

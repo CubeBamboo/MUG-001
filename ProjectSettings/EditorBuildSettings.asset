@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/OnDevelop/ScrollList.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/Relese/ScrollList.unity
+    guid: f06471ffe1b0a77418e9f44f78262468
+  - enabled: 1
+    path: Assets/Scenes/Relese/ChartPlayer.unity
+    guid: 71ca6fa77e5233641a1181d1393d590d
   m_configObjects: {}

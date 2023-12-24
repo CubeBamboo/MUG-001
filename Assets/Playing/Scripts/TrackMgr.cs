@@ -12,8 +12,8 @@ namespace Playing
         public Note activeNote { get; private set; }
         private float noteMovePerFrame => ChartPlayer.Instance.noteSpeed / 50f;
 
-        [Header("Component")]
-        public TMPro.TextMeshProUGUI text;
+        //[Header("Component")]
+        //public TMPro.TextMeshProUGUI text;
 
         [Header("Settings")]
         public GameObject notePrefab;
@@ -27,7 +27,7 @@ namespace Playing
 
         private void FixedUpdate()
         {
-            NoteNumUpdate(activeNote);
+            //NoteNumUpdate(activeNote);
             NoteMoveUpadte();
             if (activeNote != null) DetectNote();
         }
@@ -99,18 +99,18 @@ namespace Playing
             }
         }
 
-        private void NoteNumUpdate(Note note)
-        {
-            return;
+        //private void NoteNumUpdate(Note note)
+        //{
+        //    return;
 
-            if(note == null)
-            {
-                text.text = null;
-                return;
-            }
+        //    if(note == null)
+        //    {
+        //        text.text = null;
+        //        return;
+        //    }
 
-            text.text = (note.noteData.hitTime - ChartPlayer.Instance.RunningTime).ToString("0.00");
-        }
+        //    text.text = (note.noteData.hitTime - ChartPlayer.Instance.RunningTime).ToString("0.00");
+        //}
     }
     
 }

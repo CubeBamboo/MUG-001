@@ -31,10 +31,10 @@ namespace Playing
         public Vector2 noteMoveDir => noteTargetPos - noteStartPos;
 
         [Header("Chart")]
-        public string chartPath = "Assets/Resources/Chart/sample1.chart";
+        private FileInfo chartFile;
 
         //for playing chart
-        public Chart chartOnPlaying { get; private set; }
+        public ChartInfo chartOnPlaying { get; private set; }
         private RuntimeNoteData[] allRuntimeNotes;
         private uint nextNoteIndex;
 
@@ -64,13 +64,15 @@ namespace Playing
 
         private void Start()
         {
+            chartFile = Core.GameManager.Instance.selectChartFile;
+            
             //get and resolve the chart to get all the note.
-            chartOnPlaying = GetChart(chartPath);
+            chartOnPlaying = LevelEditor.ChartUtility.GetActiveChart();
             allRuntimeNotes = LevelEditor.ChartUtility.StoredNoteToRuntime(chartOnPlaying.notesArray, chartOnPlaying.bpm, chartOnPlaying.offset); Debug.Assert(allRuntimeNotes != null);
 
             //Init Game and music
             nextNoteIndex = 0;
-            InitMusic(chartOnPlaying.musicFileName);
+            InitMusic();
             hitKeySource.clip = hitKeyClip;
 
             //GameStart
@@ -123,15 +125,15 @@ namespace Playing
             RunningTime += Time.fixedDeltaTime;
 
             //play the chart
-            PlayNextNoteDetectUpdate();
+            PlayChartDetectUpdate();
 
             //auto Play
             if (autoPlay) AutoPlayUpdate();
         }
 
-        private void InitMusic(string musicFileName)
+        private void InitMusic()
         {
-            var music = Resources.Load<AudioClip>("Audio/" + musicFileName);
+            var music = LevelEditor.ChartUtility.GetAudioClip(new DirectoryInfo(chartFile.FullName), chartOnPlaying.musicFileName);
             musicSource.clip = music;
         }
 
@@ -139,17 +141,6 @@ namespace Playing
         {
             musicSource.Play();
             //isChartStart = true;
-        }
-
-        private Chart GetChart(string filePath)
-        {
-            string json = null;
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                json = reader.ReadToEnd();
-                reader.Close();
-            }
-            return LevelEditor.ChartUtility.fileToChart(json);
         }
 
         #endregion
@@ -176,7 +167,7 @@ namespace Playing
         }
 
         //Detect if we need play nextNote.
-        private void PlayNextNoteDetectUpdate()
+        private void PlayChartDetectUpdate()
         {
             if(CanPlayNextNote())
             {
@@ -271,7 +262,7 @@ namespace Playing
 
             if (keyboard.nKey.wasPressedThisFrame)
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Framework.SceneTransitionController.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
 

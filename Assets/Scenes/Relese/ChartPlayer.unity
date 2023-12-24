@@ -309,7 +309,6 @@ MonoBehaviour:
   noteTargetPos: {x: 0, y: 0}
   noteStartPos: {x: 14, y: 0}
   autoPlay: 0
-  chartPath: Assets/Resources/Chart/sample1.chart
   track: {fileID: 749837352}
   judgeEffect: {fileID: 1195608861}
   hitKeyClip: {fileID: 8300000, guid: 80fc2743c7e3fb84aa731ddefa3aac18, type: 3}
@@ -325,6 +324,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34f1b2fbc4f28504c84c2b57a330c520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &96278268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 96278269}
+  - component: {fileID: 96278270}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &96278269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96278268}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &96278270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96278268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73ec54a7c617b0047a06b75abed4767f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEndPanel: {fileID: 1806816878}
 --- !u!1 &138197223
 GameObject:
   m_ObjectHideFlags: 0
@@ -2708,7 +2752,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bb559ac65361d649901cf3d933bb1c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameEndPanel: {fileID: 1806816878}
 --- !u!1 &1955774680
 GameObject:
   m_ObjectHideFlags: 0
@@ -3138,3 +3181,4 @@ SceneRoots:
   - {fileID: 1968771682}
   - {fileID: 1923818104}
   - {fileID: 1540731527}
+  - {fileID: 96278269}
